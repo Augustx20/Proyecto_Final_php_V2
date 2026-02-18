@@ -28,7 +28,20 @@ class TurnoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+        'fecha' => 'required|date',
+        'hora' => 'required',
+        'descripcion' => 'required|string|max:255',
+    ]);
+
+    Turno::create([
+        'user_id' => auth()->id(),
+        'fecha' => $validated['fecha'],
+        'hora' => $validated['hora'],
+        'descripcion' => $validated['descripcion'],
+    ]);
+
+    return redirect()->route('turnos.index');
     }
 
     /**
