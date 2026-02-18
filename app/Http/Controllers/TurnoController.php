@@ -12,7 +12,10 @@ class TurnoController extends Controller
      */
     public function index()
     {
-        //
+        $turnos = Turno::where('user_id', auth()->id())
+                        ->paginate(5);
+
+        return view('turnos.index', compact('turnos'));
     }
 
     /**
