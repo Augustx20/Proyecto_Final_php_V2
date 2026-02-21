@@ -7,6 +7,11 @@
            Crear Turno
         </a>
 
+        <form method="GET" action="{{ route('turnos.index') }}" class="mb-3 mt-4">
+            <input type="date" name="fecha" value="{{ request('fecha') }}" class="border px-2 py-1">
+            <button type="submit" class="bg-gray-500 text-white px-3 py-1 rounded">Filtrar</button>
+        </form>
+
         <table class="table-auto w-full mt-4 border">
             <thead>
                 <tr>
@@ -27,6 +32,14 @@
                            class="text-yellow-500">Editar</a>
 
                         @if(auth()->user()->role === 'admin')
+                        <form action="{{ route('turnos.confirmar', $turno) }}" method="POST" class="inline mr-2">
+                            @csrf
+                            @method('PATCH')
+                            <button class="text-green-500">
+                                Confirmar
+                            </button>
+                        </form>
+
                         <form action="{{ route('turnos.destroy', $turno) }}" 
                               method="POST" 
                               class="inline">

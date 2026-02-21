@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Turno extends Model
 {
     protected $fillable = [
-        'user_id',
         'fecha',
         'hora',
-        'descripcion'
+        'descripcion',
+        'user_id',
+        'estado'
     ];
     public function user()
     {

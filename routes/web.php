@@ -10,6 +10,11 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('turnos', TurnoController::class);
 
+    // admin-only confirmation action for a turno
+    Route::patch('/turnos/{turno}/confirmar', [TurnoController::class, 'confirmar'])
+        ->name('turnos.confirmar')
+        ->middleware('role:admin');
+
     Route::get('/dashboard', function () {
         if (auth()->user()->role === 'admin') {
             return redirect()->route('dashboard.admin');

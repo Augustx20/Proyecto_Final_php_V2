@@ -11,10 +11,9 @@ class TurnoPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user, Turno $turno): bool
     {
-        // admins can see all; regular users only their own turnos
-        return $user->role === 'admin';
+        return $user->role === 'admin' || $turno->user_id === $user->id;
     }
 
     /**
@@ -22,7 +21,7 @@ class TurnoPolicy
      */
     public function view(User $user, Turno $turno): bool
     {
-        return $user->role === 'admin' || $turno->user_id === $user->id;
+        return false;
     }
 
     /**
@@ -30,8 +29,7 @@ class TurnoPolicy
      */
     public function create(User $user): bool
     {
-        // any authenticated user can create a turno
-        return $user->role === 'admin' || $user->role === 'user';
+        return false;
     }
 
     /**
@@ -39,7 +37,7 @@ class TurnoPolicy
      */
     public function update(User $user, Turno $turno): bool
     {
-        return $this->view($user, $turno);
+        return false;
     }
 
     /**
@@ -47,7 +45,7 @@ class TurnoPolicy
      */
     public function delete(User $user, Turno $turno): bool
     {
-        return $this->view($user, $turno);
+        return false;
     }
 
     /**
@@ -55,7 +53,7 @@ class TurnoPolicy
      */
     public function restore(User $user, Turno $turno): bool
     {
-        return $this->view($user, $turno);
+        return false;
     }
 
     /**
@@ -63,6 +61,6 @@ class TurnoPolicy
      */
     public function forceDelete(User $user, Turno $turno): bool
     {
-        return $user->role === 'admin';
+        return false;
     }
 }

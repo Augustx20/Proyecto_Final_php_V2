@@ -13,14 +13,21 @@ class TurnoController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->role === 'admin') {
-                $turnos = Turno::paginate(5);
-            } else {
-                $turnos = Turno::where('user_id', auth()->id())
-                                ->paginate(5);
-            }
+        $query = Turno::query();
 
-            return view('turnos.index', compact('turnos'));
+        // Si es paciente, solo ve sus turnos
+        if(auth()->user()->role === 'paciente'){
+            $query->where('user_id', auth()->id());
+        }
+
+        // Filtro por fecha si existe en la URL
+        if(request('fecha')){
+            $query->where('fecha', request('fecha'));
+        }
+
+        $turnos = $query->orderBy('fecha', 'asc')->paginate(10);
+
+        return view('turnos.index', compact('turnos'));
     }
 
     /**
@@ -84,5 +91,16 @@ class TurnoController extends Controller
 
         $turno->delete();
         return redirect()->route('turnos.index');
+    }
+
+    /**
+     * Confirm the turno (admin only).
+     */
+    public function confirmar(Turno $turno)
+    {
+        // only admins should hit this route; middleware handles it
+        $turno->update(['estado' => 'confirmado']);
+
+        return back()->with('success', 'Turno confirmado');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTurnoRequest extends FormRequest
 {
@@ -24,7 +25,12 @@ class StoreTurnoRequest extends FormRequest
     {
         return [
            'fecha' => 'required|date|after_or_equal:today',
-            'hora' => 'required',
+            'hora' => [
+                'required',
+                Rule::unique('turnos')->where(function ($query) {
+                    return $query->where('fecha', request('fecha'));
+                })
+            ],
             'descripcion' => 'required|min:5|max:255'
         ];
     }
