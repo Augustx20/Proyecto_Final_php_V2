@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Turno;
+use App\Http\Requests\StoreTurnoRequest;
 use Illuminate\Http\Request;
 
 class TurnoController extends Controller
@@ -12,10 +13,14 @@ class TurnoController extends Controller
      */
     public function index()
     {
-        $turnos = Turno::where('user_id', auth()->id())
-                        ->paginate(5);
+        if (auth()->user()->role === 'admin') {
+                $turnos = Turno::paginate(5);
+            } else {
+                $turnos = Turno::where('user_id', auth()->id())
+                                ->paginate(5);
+            }
 
-        return view('turnos.index', compact('turnos'));
+            return view('turnos.index', compact('turnos'));
     }
 
     /**
@@ -23,28 +28,21 @@ class TurnoController extends Controller
      */
     public function create()
     {
-        //
+        //return "Estoy en create";
+        return view('turnos.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreTurnoRequest $request)
     {
-        $validated = $request->validate([
-        'fecha' => 'required|date',
-        'hora' => 'required',
-        'descripcion' => 'required|string|max:255',
-    ]);
+        Turno::create([
+            ...$request->validated(),
+            'user_id' => auth()->id(),
+        ]);
 
-    Turno::create([
-        'user_id' => auth()->id(),
-        'fecha' => $validated['fecha'],
-        'hora' => $validated['hora'],
-        'descripcion' => $validated['descripcion'],
-    ]);
-
-    return redirect()->route('turnos.index');
+        return redirect()->route('turnos.index');
     }
 
     /**
@@ -52,7 +50,9 @@ class TurnoController extends Controller
      */
     public function show(Turno $turno)
     {
-        //
+        $this->authorize('view', $turno);
+
+        return view('turnos.show', compact('turno'));
     }
 
     /**
@@ -60,7 +60,9 @@ class TurnoController extends Controller
      */
     public function edit(Turno $turno)
     {
-        //
+        $this->authorize('view', $turno);
+
+        return view('turnos.edit', compact('turno'));
     }
 
     /**
@@ -68,7 +70,9 @@ class TurnoController extends Controller
      */
     public function update(Request $request, Turno $turno)
     {
-        //
+        $this->authorize('view', $turno);
+
+        // validation and update logic would go here
     }
 
     /**
@@ -76,6 +80,9 @@ class TurnoController extends Controller
      */
     public function destroy(Turno $turno)
     {
-        //
+        $this->authorize('view', $turno);
+
+        $turno->delete();
+        return redirect()->route('turnos.index');
     }
 }

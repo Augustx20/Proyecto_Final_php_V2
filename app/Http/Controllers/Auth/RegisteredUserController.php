@@ -43,8 +43,13 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // log in the new user so we can redirect based on role
+        auth()->login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        if ($user->role === 'admin') {
+            return redirect()->route('dashboard.admin');
+        }
+
+        return redirect()->route('dashboard.paciente');
     }
 }

@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('turnos', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->date('fecha');
-        $table->time('hora');
-        $table->string('descripcion');
-        $table->timestamps();
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->date('fecha');
+            $table->time('hora');
+            $table->string('descripcion');
+            $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
