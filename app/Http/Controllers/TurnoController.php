@@ -87,11 +87,14 @@ class TurnoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Turno $turno)
+    public function update(StoreTurnoRequest $request, Turno $turno)
     {
-        $this->authorize('view', $turno);
+        $this->authorize('update', $turno);
 
-        // validation and update logic would go here
+        $turno->update($request->validated());
+
+        return redirect()->route('turnos.index')
+            ->with('success', 'Turno actualizado correctamente');
     }
 
     /**
@@ -99,10 +102,12 @@ class TurnoController extends Controller
      */
     public function destroy(Turno $turno)
     {
-        $this->authorize('view', $turno);
+        $this->authorize('delete', $turno);
 
         $turno->delete();
-        return redirect()->route('turnos.index');
+
+        return redirect()->route('turnos.index')
+            ->with('success', 'Turno eliminado correctamente');
     }
 
     /**

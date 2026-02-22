@@ -37,7 +37,7 @@ class TurnoPolicy
      */
     public function update(User $user, Turno $turno): bool
     {
-        return false;
+        return $user->role === 'admin' || $turno->user_id === $user->id;
     }
 
     /**
@@ -45,7 +45,7 @@ class TurnoPolicy
      */
     public function delete(User $user, Turno $turno): bool
     {
-        return false;
+         return $user->role === 'admin' || $turno->user_id === $user->id;
     }
 
     /**

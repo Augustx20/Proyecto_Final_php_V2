@@ -38,10 +38,28 @@
                         @endif
                     </td>
                     <td class="border px-4 py-2">
-                        <a href="{{ route('turnos.edit', $turno) }}" 
-                           class="text-yellow-500">Editar</a>
-
                         @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('turnos.edit', $turno) }}" 
+                               class="text-yellow-500">Editar</a>
+
+                            <form action="{{ route('turnos.confirmar', $turno) }}" method="POST" class="inline mr-2">
+                                @csrf
+                                @method('PATCH')
+                                <button class="text-green-500">
+                                    Confirmar
+                                </button>
+                            </form>
+
+                            <form action="{{ route('turnos.destroy', $turno) }}" 
+                                  method="POST" 
+                                  class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button class="text-red-500" onclick="return confirm('¿Seguro que desea eliminar el turno?')">
+                                    Eliminar
+                                </button>
+                            </form>
+                        @endif
                         <form action="{{ route('turnos.confirmar', $turno) }}" method="POST" class="inline mr-2">
                             @csrf
                             @method('PATCH')
