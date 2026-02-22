@@ -27,9 +27,15 @@ class StoreTurnoRequest extends FormRequest
            'fecha' => 'required|date|after_or_equal:today',
             'hora' => [
                 'required',
+                'date_format:H:i',
                 Rule::unique('turnos')->where(function ($query) {
                     return $query->where('fecha', request('fecha'));
-                })
+                }),
+                function ($attribute, $value, $fail) {
+                    if ($value < '08:00' || $value > '18:00') {
+                        $fail('El turno debe estar dentro del horario laboral.');
+                    }
+                },
             ],
             'descripcion' => 'required|min:5|max:255'
         ];

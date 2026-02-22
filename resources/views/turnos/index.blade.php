@@ -18,6 +18,7 @@
                     <th class="border px-4 py-2">Fecha</th>
                     <th class="border px-4 py-2">Hora</th>
                     <th class="border px-4 py-2">Descripción</th>
+                    <th class="border px-4 py-2">Estado</th>
                     <th class="border px-4 py-2">Acciones</th>
                 </tr>
             </thead>
@@ -27,6 +28,15 @@
                     <td class="border px-4 py-2">{{ $turno->fecha }}</td>
                     <td class="border px-4 py-2">{{ $turno->hora }}</td>
                     <td class="border px-4 py-2">{{ $turno->descripcion }}</td>
+                    <td class="border px-4 py-2">
+                        @if($turno->estado === 'pendiente')
+                            <span class="text-yellow-600">Pendiente</span>
+                        @elseif($turno->estado === 'confirmado')
+                            <span class="text-green-600">Confirmado</span>
+                        @else
+                            <span>{{ ucfirst($turno->estado) }}</span>
+                        @endif
+                    </td>
                     <td class="border px-4 py-2">
                         <a href="{{ route('turnos.edit', $turno) }}" 
                            class="text-yellow-500">Editar</a>
@@ -45,7 +55,7 @@
                               class="inline">
                             @csrf
                             @method('DELETE')
-                            <button class="text-red-500">
+                            <button class="text-red-500" onclick="return confirm('¿Seguro que desea eliminar el turno?')">
                                 Eliminar
                             </button>
                         </form>

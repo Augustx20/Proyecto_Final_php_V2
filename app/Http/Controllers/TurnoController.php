@@ -25,9 +25,21 @@ class TurnoController extends Controller
             $query->where('fecha', request('fecha'));
         }
 
-        $turnos = $query->orderBy('fecha', 'asc')->paginate(10);
+        $turnos = $query->orderBy('fecha', 'asc')
+                        ->orderBy('hora', 'asc')
+                        ->paginate(10);
 
-        return view('turnos.index', compact('turnos'));
+        // calcular totales para el dashboard
+        $total = Turno::count();
+        $pendientes = Turno::where('estado', 'pendiente')->count();
+        $confirmados = Turno::where('estado', 'confirmado')->count();
+
+        return view('turnos.index', compact(
+            'turnos',
+            'total',
+            'pendientes',
+            'confirmados'
+        ));
     }
 
     /**
