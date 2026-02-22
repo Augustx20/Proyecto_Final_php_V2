@@ -60,23 +60,15 @@
                                 </button>
                             </form>
                         @endif
-                        <form action="{{ route('turnos.confirmar', $turno) }}" method="POST" class="inline mr-2">
-                            @csrf
-                            @method('PATCH')
-                            <button class="text-green-500">
-                                Confirmar
-                            </button>
-                        </form>
 
-                        <form action="{{ route('turnos.destroy', $turno) }}" 
-                              method="POST" 
-                              class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button class="text-red-500" onclick="return confirm('¿Seguro que desea eliminar el turno?')">
-                                Eliminar
-                            </button>
-                        </form>
+                        @if(auth()->user()->role === 'paciente' && $turno->estado === 'pendiente')
+                            <form action="{{ route('turnos.cancelar', $turno) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('PATCH')
+                                <button onclick="return confirm('¿Desea cancelar el turno?')">
+                                    Cancelar
+                                </button>
+                            </form>
                         @endif
                     </td>
                 </tr>

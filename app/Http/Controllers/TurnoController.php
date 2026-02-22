@@ -120,4 +120,22 @@ class TurnoController extends Controller
 
         return back()->with('success', 'Turno confirmado');
     }
+
+    /**
+     * Cancel the turno (user or admin when pending).
+     */
+    public function cancelar(Turno $turno)
+    {
+        // reuse update policy so owners/admins can act
+        $this->authorize('update', $turno);
+
+        // Only cancel if still pending
+        if ($turno->estado !== 'pendiente') {
+            return back()->with('error', 'Solo se pueden cancelar turnos pendientes.');
+        }
+
+        $turno->update(['estado' => 'cancelado']);
+
+        return back()->with('success', 'Turno cancelado correctamente.');
+    }
 }

@@ -15,6 +15,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('turnos.confirmar')
         ->middleware('role:admin');
 
+    // allow owner or admin to cancel pending turnos
+    Route::patch('/turnos/{turno}/cancelar', [TurnoController::class, 'cancelar'])
+        ->name('turnos.cancelar');
+
     Route::get('/dashboard', function () {
         if (auth()->user()->role === 'admin') {
             return redirect()->route('dashboard.admin');
