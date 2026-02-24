@@ -21,6 +21,11 @@ class TurnoController extends Controller
             $query->where('user_id', auth()->id());
         }
 
+        // Si es doctor, solo los turnos asignados a su perfil
+        if(auth()->user()->role === 'doctor'){
+            $query->where('medico_id', auth()->user()->medico_id);
+        }
+
         // Filtro por fecha si existe en la URL
         if(request('fecha')){
             $query->where('fecha', request('fecha'));
@@ -49,8 +54,8 @@ class TurnoController extends Controller
      */
     public function create()
     {
-        // cargar lista de médicos para el select
-        $medicos = Medico::all();
+        $medicos = Medico::where('disponible', true)->get();
+
         return view('turnos.create', compact('medicos'));
     }
 
@@ -142,7 +147,7 @@ class TurnoController extends Controller
      */
     public function cancelar(Turno $turno)
     {
-        // reuse update policy so owners/admins can act
+        // reuse update policy so owners/admins or doctors can act
         $this->authorize('update', $turno);
 
         // Only cancel if still pending
@@ -153,5 +158,35 @@ class TurnoController extends Controller
         $turno->update(['estado' => 'cancelado']);
 
         return back()->with('success', 'Turno cancelado correctamente.');
+    }
+
+    /**
+     * Mark the turno as finalizado (doctor or admin).
+     */
+    public function finalizar(Turno $turno)
+    {
+        $this->authorize('update', $turno);
+
+        $turno->update(['estado' => 'finalizado']);
+
+        return back();
+    }
+
+    /**
+     * Doctor can reassign the turno to another medico.
+     */
+    public function derivar(Request $request, Turno $turno)
+    {
+        $request->validate([
+            'nuevo_medico_id' => 'required|exists:medicos,id',
+        ]);
+
+        $this->authorize('update', $turno);
+
+        $turno->update([
+            'medico_id' => $request->nuevo_medico_id,
+        ]);
+
+        return back();
     }
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Medico;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class MedicoManagementTest extends TestCase
@@ -33,11 +34,15 @@ class MedicoManagementTest extends TestCase
     {
         $admin = User::factory()->create(['role' => 'admin']);
 
-        $response = $this->actingAs($admin)->post(route('medicos.store'), [
+        $credentials = [
             'nombre' => 'Juan',
             'apellido' => 'Perez',
             'especialidad' => 'Cardiología',
-        ]);
+            'email' => 'juan.perez@example.com',
+            'password' => 'secret123',
+        ];
+
+        $response = $this->actingAs($admin)->post(route('medicos.store'), $credentials);
 
         $response->assertRedirect(route('medicos.index'))
             ->assertSessionHas('success');
@@ -47,5 +52,22 @@ class MedicoManagementTest extends TestCase
             'apellido' => 'Perez',
             'especialidad' => 'Cardiología',
         ]);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'juan.perez@example.com',
+            'role' => 'doctor',
+        ]);
+
+        // password should be hashed, not stored in plain text
+        $user = User::where('email', 'juan.perez@example.com')->first();
+        $this->assertTrue(
+            Hash::check('secret123', $user->password),
+            'Password was not hashed correctly'
+        );
+
+        $this->assertEquals(
+            Medico::where('nombre', 'Juan')->first()->id,
+            $user->medico_id
+        );
     }
 }

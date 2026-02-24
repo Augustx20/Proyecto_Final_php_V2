@@ -102,4 +102,67 @@ class TurnoFeatureTest extends TestCase
             'medico_id' => $medico2->id,
         ]);
     }
+
+    public function test_doctor_sees_only_his_turnos(): void
+    {
+        $doctor = User::factory()->create(['role' => 'doctor']);
+        $medico = Medico::factory()->create();
+        $doctor->medico()->associate($medico)->save();
+
+        $myTurno = Turno::create([
+            'fecha' => now()->addDay()->toDateString(),
+            'hora' => '08:00',
+            'descripcion' => 'Para mi',
+            'medico_id' => $doctor->medico_id,
+            'user_id' => User::factory()->create(['role' => 'paciente'])->id,
+        ]);
+
+        $otherTurno = Turno::create([
+            'fecha' => now()->addDay()->toDateString(),
+            'hora' => '09:00',
+            'descripcion' => 'Otro doctor',
+            'medico_id' => Medico::factory()->create()->id,
+            'user_id' => User::factory()->create(['role' => 'paciente'])->id,
+        ]);
+
+        $response = $this->actingAs($doctor)->get(route('turnos.index'));
+        $response->assertSee('Para mi');
+        $response->assertDontSee('Otro doctor');
+    }
+
+    public function test_doctor_can_finalize_and_derivar_turno(): void
+    {
+        $doctor = User::factory()->create(['role' => 'doctor']);
+        $medico = Medico::factory()->create();
+        $doctor->medico()->associate($medico)->save();
+
+        $paciente = User::factory()->create(['role' => 'paciente']);
+        $turno = Turno::create([
+            'fecha' => now()->addDay()->toDateString(),
+            'hora' => '10:00',
+            'descripcion' => 'Consulta',
+            'medico_id' => $medico->id,
+            'user_id' => $paciente->id,
+            'estado' => 'pendiente',
+        ]);
+
+        $this->actingAs($doctor)->post(route('turnos.finalizar', $turno));
+        $this->assertDatabaseHas('turnos', ['id' => $turno->id, 'estado' => 'finalizado']);
+
+        $newMedico = Medico::factory()->create();
+        $this->actingAs($doctor)->post(route('turnos.derivar', $turno), [
+            'nuevo_medico_id' => $newMedico->id,
+        ]);
+        $this->assertDatabaseHas('turnos', ['id' => $turno->id, 'medico_id' => $newMedico->id]);
+    }
+
+    public function test_doctor_toggle_availability(): void
+    {
+        $doctor = User::factory()->create(['role' => 'doctor']);
+        $medico = Medico::factory()->create(['disponible' => true]);
+        $doctor->medico()->associate($medico)->save();
+
+        $this->actingAs($doctor)->post(route('doctor.toggle'));
+        $this->assertDatabaseHas('medicos', ['id' => $medico->id, 'disponible' => false]);
+    }
 }

@@ -21,6 +21,15 @@
                             {{ __('Gestión de Médicos') }}
                         </x-nav-link>
                     @endif
+
+                    @if(auth()->check() && auth()->user()->role === 'doctor')
+                        <form method="POST" action="{{ route('doctor.toggle') }}" class="inline-block ms-4">
+                            @csrf
+                            <button type="submit" class="text-sm text-gray-700">
+                                {{ auth()->user()->medico->disponible ? 'Disponible' : 'No disponible' }}
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
 
@@ -81,6 +90,15 @@
                 <x-responsive-nav-link :href="route('medicos.index')" :active="request()->routeIs('medicos.*')">
                     {{ __('Gestión de Médicos') }}
                 </x-responsive-nav-link>
+            @endif
+
+            @if(auth()->check() && auth()->user()->role === 'doctor')
+                <form method="POST" action="{{ route('doctor.toggle') }}" class="px-4 py-2">
+                    @csrf
+                    <button type="submit" class="text-sm text-gray-700">
+                        {{ auth()->user()->medico->disponible ? 'Disponible' : 'No disponible' }}
+                    </button>
+                </form>
             @endif
         </div>
 

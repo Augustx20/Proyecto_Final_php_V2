@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Medico;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreMedicoRequest;
 
 class MedicoController extends Controller
 {
@@ -25,17 +29,37 @@ class MedicoController extends Controller
     }
 
     /**
+     * Toggle availability for the authenticated doctor (from navbar form).
+     */
+    public function toggle()
+    {
+        $medico = Medico::findOrFail(auth()->user()->medico_id);
+        $medico->update([ 'disponible' => ! $medico->disponible ]);
+
+        return back();
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMedicoRequest $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
-            'especialidad' => 'required|string|max:100',
-        ]);
+        DB::transaction(function () use ($request) {
+            $medico = Medico::create([
+                'nombre' => $request->nombre,
+                'apellido' => $request->apellido,
+                'especialidad' => $request->especialidad,
+                'disponible' => true,
+            ]);
 
-        Medico::create($request->all());
+            User::create([
+                'name' => $request->nombre . ' ' . $request->apellido,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'doctor',
+                'medico_id' => $medico->id,
+            ]);
+        });
 
         return redirect()->route('medicos.index')
             ->with('success', 'Médico creado correctamente');

@@ -27,6 +27,16 @@
                             <input type="text" name="especialidad" required class="mt-1 block w-full" />
                         </div>
 
+                        <div class="mb-4">
+                            <label class="block text-gray-700">Correo electrónico</label>
+                            <input type="email" name="email" required class="mt-1 block w-full" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700">Contraseña</label>
+                            <input type="password" name="password" required class="mt-1 block w-full" />
+                        </div>
+
                         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Guardar</button>
                     </form>
                 </div>

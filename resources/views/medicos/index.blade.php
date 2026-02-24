@@ -19,6 +19,7 @@
                                 <th class="px-4 py-2 border">Nombre</th>
                                 <th class="px-4 py-2 border">Apellido</th>
                                 <th class="px-4 py-2 border">Especialidad</th>
+                                <th class="px-4 py-2 border">Disponible</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -27,6 +28,7 @@
                                 <td class="px-4 py-2 border">{{ $medico->nombre }}</td>
                                 <td class="px-4 py-2 border">{{ $medico->apellido }}</td>
                                 <td class="px-4 py-2 border">{{ $medico->especialidad }}</td>
+                                <td class="px-4 py-2 border">{{ $medico->disponible ? 'Sí' : 'No' }}</td>
                             </tr>
                             @endforeach
                         </tbody>

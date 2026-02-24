@@ -72,6 +72,33 @@
                                 </button>
                             </form>
                         @endif
+
+                        @if(auth()->user()->role === 'doctor' && $turno->medico_id === auth()->user()->medico_id)
+                            <form action="{{ route('turnos.finalizar', $turno) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="text-blue-500">Finalizar</button>
+                            </form>
+
+                            @if($turno->estado === 'pendiente')
+                                <form action="{{ route('turnos.cancelar', $turno) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button class="text-red-500" onclick="return confirm('¿Desea cancelar el turno?')">Cancelar</button>
+                                </form>
+                            @endif
+
+                            <form action="{{ route('turnos.derivar', $turno) }}" method="POST" class="inline">
+                                @csrf
+                                <select name="nuevo_medico_id" class="border px-1 py-0">
+                                    @foreach(App\Models\Medico::all() as $med)
+                                        @if($med->id !== $turno->medico_id)
+                                            <option value="{{ $med->id }}">{{ $med->nombre }} {{ $med->apellido }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="text-purple-500">Derivar</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'medico_id',
+        'paciente_id',
     ];
 
     /**
@@ -44,5 +47,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Doctor account (points back to medico record).
+     */
+    public function medico()
+    {
+        return $this->belongsTo(Medico::class);
+    }
+
+    /**
+     * In the future this could reference a patient profile.
+     */
+    public function paciente()
+    {
+        return $this->belongsTo(self::class, 'paciente_id');
     }
 }

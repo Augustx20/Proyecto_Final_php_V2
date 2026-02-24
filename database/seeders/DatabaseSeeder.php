@@ -29,5 +29,21 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
+
+        // sample doctor (in case you want to test doctor flow quickly)
+        $doc = \App\Models\Medico::firstOrCreate([
+            'nombre' => 'Doctor',
+            'apellido' => 'Sample',
+            'especialidad' => 'General',
+        ], ['disponible' => true]);
+
+        User::updateOrCreate([
+            'email' => 'doctor@example.com',
+        ], [
+            'name' => 'Dr Sample',
+            'password' => Hash::make('password'),
+            'role' => 'doctor',
+            'medico_id' => $doc->id,
+        ]);
     }
 }

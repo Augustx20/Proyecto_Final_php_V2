@@ -19,6 +19,7 @@ class Medico extends Model
         'nombre',
         'apellido',
         'especialidad',
+        'disponible',
     ];
 
     /**
@@ -27,5 +28,13 @@ class Medico extends Model
     public function turnos()
     {
         return $this->hasMany(Turno::class);
+    }
+
+    /**
+     * Relation with user account when the médico has a user.
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class);
     }
 }

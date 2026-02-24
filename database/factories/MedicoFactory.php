@@ -18,6 +18,7 @@ class MedicoFactory extends Factory
             'nombre' => fake()->firstName(),
             'apellido' => fake()->lastName(),
             'especialidad' => fake()->jobTitle(),
+            'disponible' => true,
         ];
     }
 }

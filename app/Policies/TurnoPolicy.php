@@ -13,8 +13,8 @@ class TurnoPolicy
      */
     public function viewAny(User $user): bool
     {
-        // admins can see all, patients only their propios turnos
-        return $user->role === 'admin';
+        // admins can see all, doctors see their own, patients see index but will be filtered in controller
+        return in_array($user->role, ['admin', 'doctor']);
     }
 
     /**
@@ -22,7 +22,15 @@ class TurnoPolicy
      */
     public function view(User $user, Turno $turno): bool
     {
-        return $user->role === 'admin' || $turno->user_id === $user->id;
+        if ($user->role === 'admin') {
+            return true;
+        }
+
+        if ($user->role === 'doctor') {
+            return $turno->medico_id === $user->medico_id;
+        }
+
+        return $turno->user_id === $user->id;
     }
 
     /**
@@ -38,7 +46,15 @@ class TurnoPolicy
      */
     public function update(User $user, Turno $turno): bool
     {
-        return $user->role === 'admin' || $turno->user_id === $user->id;
+        if ($user->role === 'admin') {
+            return true;
+        }
+
+        if ($user->role === 'doctor') {
+            return $turno->medico_id === $user->medico_id;
+        }
+
+        return $turno->user_id === $user->id;
     }
 
     /**
@@ -46,7 +62,15 @@ class TurnoPolicy
      */
     public function delete(User $user, Turno $turno): bool
     {
-         return $user->role === 'admin' || $turno->user_id === $user->id;
+         if ($user->role === 'admin') {
+             return true;
+         }
+
+         if ($user->role === 'doctor') {
+             return $turno->medico_id === $user->medico_id;
+         }
+
+         return $turno->user_id === $user->id;
     }
 
     /**
