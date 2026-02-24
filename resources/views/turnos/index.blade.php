@@ -17,6 +17,7 @@
                 <tr>
                     <th class="border px-4 py-2">Fecha</th>
                     <th class="border px-4 py-2">Hora</th>
+                    <th class="border px-4 py-2">Médico</th>
                     <th class="border px-4 py-2">Descripción</th>
                     <th class="border px-4 py-2">Estado</th>
                     <th class="border px-4 py-2">Acciones</th>
@@ -27,6 +28,7 @@
                 <tr>
                     <td class="border px-4 py-2">{{ $turno->fecha }}</td>
                     <td class="border px-4 py-2">{{ $turno->hora }}</td>
+                    <td class="border px-4 py-2">{{ $turno->medico->nombre }} {{ $turno->medico->apellido }}</td>
                     <td class="border px-4 py-2">{{ $turno->descripcion }}</td>
                     <td class="border px-4 py-2">
                         @if($turno->estado === 'pendiente')

@@ -1,0 +1,51 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Medico;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class MedicoManagementTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_admin_can_see_medico_index(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)->get(route('medicos.index'));
+
+        $response->assertOk();
+    }
+
+    public function test_non_admin_cannot_access_medico_routes(): void
+    {
+        $user = User::factory()->create(['role' => 'paciente']);
+
+        $this->actingAs($user)
+            ->get(route('medicos.index'))
+            ->assertStatus(403);
+    }
+
+    public function test_admin_can_create_medico(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)->post(route('medicos.store'), [
+            'nombre' => 'Juan',
+            'apellido' => 'Perez',
+            'especialidad' => 'Cardiología',
+        ]);
+
+        $response->assertRedirect(route('medicos.index'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('medicos', [
+            'nombre' => 'Juan',
+            'apellido' => 'Perez',
+            'especialidad' => 'Cardiología',
+        ]);
+    }
+}

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Turno;
+use App\Models\Medico;
 use App\Http\Requests\StoreTurnoRequest;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,8 @@ class TurnoController extends Controller
             $query->where('fecha', request('fecha'));
         }
 
-        $turnos = $query->orderBy('fecha', 'asc')
+        $turnos = $query->with('medico')
+                        ->orderBy('fecha', 'asc')
                         ->orderBy('hora', 'asc')
                         ->paginate(10);
 
@@ -47,8 +49,9 @@ class TurnoController extends Controller
      */
     public function create()
     {
-        //return "Estoy en create";
-        return view('turnos.create');
+        // cargar lista de médicos para el select
+        $medicos = Medico::all();
+        return view('turnos.create', compact('medicos'));
     }
 
     /**
@@ -81,7 +84,8 @@ class TurnoController extends Controller
     {
         $this->authorize('view', $turno);
 
-        return view('turnos.edit', compact('turno'));
+        $medicos = Medico::all();
+        return view('turnos.edit', compact('turno', 'medicos'));
     }
 
     /**

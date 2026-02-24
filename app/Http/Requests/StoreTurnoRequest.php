@@ -30,14 +30,15 @@ class StoreTurnoRequest extends FormRequest
                 'date_format:H:i',
                 Rule::unique('turnos')->where(function ($query) {
                     return $query->where('fecha', request('fecha'));
-                }),
+                })->ignore($this->turno?->id),
                 function ($attribute, $value, $fail) {
                     if ($value < '08:00' || $value > '18:00') {
                         $fail('El turno debe estar dentro del horario laboral.');
                     }
                 },
             ],
-            'descripcion' => 'required|min:5|max:255'
+            'descripcion' => 'required|min:5|max:255',
+            'medico_id' => 'required|exists:medicos,id'
         ];
     }
 }

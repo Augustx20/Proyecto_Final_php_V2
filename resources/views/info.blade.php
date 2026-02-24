@@ -22,7 +22,7 @@
 
         <ul class="list-disc ml-6 mt-2">
             <li>Administrador: gestión total de turnos</li>
-            <li>Paciente: gestión de sus propios turnos</li>
+            <li>Paciente: gestión de sus propios turnos (incluye elegir médico)</li>
         </ul>
     </div>
 </x-app-layout>

@@ -28,6 +28,18 @@
         </div>
 
         <div class="mb-3">
+            <label>Médico</label>
+            <select name="medico_id" class="border rounded w-full" required>
+                <option value="">Seleccione un médico</option>
+                @foreach($medicos as $medico)
+                    <option value="{{ $medico->id }}">
+                        {{ $medico->nombre }} {{ $medico->apellido }} - {{ $medico->especialidad }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label>Descripción</label>
             <input type="text" name="descripcion" class="border rounded w-full" required>
         </div>

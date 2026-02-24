@@ -15,6 +15,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('turnos.confirmar')
         ->middleware('role:admin');
 
+    // administración de médicos (solo administradores)
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('medicos', App\Http\Controllers\MedicoController::class);
+    });
+
     // allow owner or admin to cancel pending turnos
     Route::patch('/turnos/{turno}/cancelar', [TurnoController::class, 'cancelar'])
         ->name('turnos.cancelar');
