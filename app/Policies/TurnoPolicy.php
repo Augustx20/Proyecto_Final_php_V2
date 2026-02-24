@@ -11,9 +11,10 @@ class TurnoPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user, Turno $turno): bool
+    public function viewAny(User $user): bool
     {
-        return $user->role === 'admin' || $turno->user_id === $user->id;
+        // admins can see all, patients only their propios turnos
+        return $user->role === 'admin';
     }
 
     /**
@@ -21,7 +22,7 @@ class TurnoPolicy
      */
     public function view(User $user, Turno $turno): bool
     {
-        return false;
+        return $user->role === 'admin' || $turno->user_id === $user->id;
     }
 
     /**
@@ -29,7 +30,7 @@ class TurnoPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return auth()->check();
     }
 
     /**
