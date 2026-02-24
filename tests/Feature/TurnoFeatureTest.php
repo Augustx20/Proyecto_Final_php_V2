@@ -45,6 +45,36 @@ class TurnoFeatureTest extends TestCase
         $response->assertSessionHasErrors('medico_id');
     }
 
+    public function test_hora_must_be_on_the_dot_or_half(): void
+    {
+        $user = User::factory()->create(['role' => 'paciente']);
+        $medico = Medico::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('turnos.store'), [
+            'fecha' => now()->addDay()->toDateString(),
+            'hora' => '10:15',
+            'descripcion' => 'Invalid minute',
+            'medico_id' => $medico->id,
+        ]);
+
+        $response->assertSessionHasErrors('hora');
+    }
+
+    public function test_hora_must_be_within_working_hours(): void
+    {
+        $user = User::factory()->create(['role' => 'paciente']);
+        $medico = Medico::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('turnos.store'), [
+            'fecha' => now()->addDay()->toDateString(),
+            'hora' => '19:00',
+            'descripcion' => 'Fuera de horario',
+            'medico_id' => $medico->id,
+        ]);
+
+        $response->assertSessionHasErrors('hora');
+    }
+
     public function test_patient_can_update_turno_medico(): void
     {
         $user = User::factory()->create(['role' => 'paciente']);

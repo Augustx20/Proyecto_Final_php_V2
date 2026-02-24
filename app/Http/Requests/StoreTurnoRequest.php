@@ -31,6 +31,13 @@ class StoreTurnoRequest extends FormRequest
                 Rule::unique('turnos')->where(function ($query) {
                     return $query->where('fecha', request('fecha'));
                 })->ignore($this->turno?->id),
+                // minuto 00 o 30 solamente
+                function ($attribute, $value, $fail) {
+                    $minutos = explode(':', $value)[1] ?? null;
+                    if (! in_array($minutos, ['00', '30'])) {
+                        $fail('La hora debe ser en punto o y media.');
+                    }
+                },
                 function ($attribute, $value, $fail) {
                     if ($value < '08:00' || $value > '18:00') {
                         $fail('El turno debe estar dentro del horario laboral.');

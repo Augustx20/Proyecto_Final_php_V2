@@ -28,11 +28,20 @@
 
             <div class="form-group">
                 <label for="hora">Hora</label>
-                <input id="hora"
-                       type="time"
-                       name="hora"
-                       value="{{ old('hora', $turno->hora) }}"
-                       class="form-control">
+                <select id="hora" name="hora" class="form-control">
+                    @for ($h = 8; $h <= 18; $h++)
+                        @php
+                            $val1 = sprintf('%02d:00', $h);
+                            $val2 = sprintf('%02d:30', $h);
+                        @endphp
+                        <option value="{{ $val1 }}" {{ old('hora', $turno->hora) == $val1 ? 'selected' : '' }}>
+                            {{ $val1 }}
+                        </option>
+                        <option value="{{ $val2 }}" {{ old('hora', $turno->hora) == $val2 ? 'selected' : '' }}>
+                            {{ $val2 }}
+                        </option>
+                    @endfor
+                </select>
             </div>
 
             <div class="form-group">

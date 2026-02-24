@@ -59,6 +59,18 @@ class TurnoController extends Controller
      */
     public function store(StoreTurnoRequest $request)
     {
+        // adicional: volver a comprobar solapamiento en el controlador para
+        // dar un mensaje personalizado (el Request ya tiene la regla unique).
+        $existeTurno = Turno::where('fecha', $request->fecha)
+            ->where('hora', $request->hora)
+            ->exists();
+
+        if ($existeTurno) {
+            return back()->withErrors([
+                'hora' => 'Ese horario ya está reservado.'
+            ])->withInput();
+        }
+
         Turno::create([
             ...$request->validated(),
             'user_id' => auth()->id(),

@@ -24,7 +24,16 @@
 
         <div class="mb-3">
             <label>Hora</label>
-            <input type="time" name="hora" class="border rounded w-full" required>
+            <select name="hora" class="border rounded w-full" required>
+                @for ($h = 8; $h <= 18; $h++)
+                    <option value="{{ sprintf('%02d:00', $h) }}" {{ old('hora') == sprintf('%02d:00', $h) ? 'selected' : '' }}>
+                        {{ sprintf('%02d:00', $h) }}
+                    </option>
+                    <option value="{{ sprintf('%02d:30', $h) }}" {{ old('hora') == sprintf('%02d:30', $h) ? 'selected' : '' }}>
+                        {{ sprintf('%02d:30', $h) }}
+                    </option>
+                @endfor
+            </select>
         </div>
 
         <div class="mb-3">
