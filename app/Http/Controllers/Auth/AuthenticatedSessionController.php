@@ -28,11 +28,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (auth()->user()->role === 'admin') {
-            return redirect()->route('dashboard.admin');
-        }
-
-        return redirect()->route('dashboard.paciente');
+        $role = auth()->user()->role;
+        $redirect = match ($role) {
+            'admin' => redirect()->route('dashboard.admin'),
+            'doctor' => redirect()->route('dashboard.doctor'),
+            default => redirect()->route('dashboard.paciente'),
+        };
+        return $redirect->with('success', 'Inicio de sesión exitoso.');
 
     }
 

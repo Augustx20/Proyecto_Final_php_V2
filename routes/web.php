@@ -39,11 +39,15 @@ Route::middleware(['auth'])->group(function () {
         ->name('turnos.cancelar');
 
     Route::get('/dashboard', function () {
-        if (auth()->user()->role === 'admin') {
-            return redirect()->route('dashboard.admin');
-        }
 
-        return redirect()->route('dashboard.paciente');
+        $role = auth()->user()->role;
+
+        return match ($role) {
+            'admin' => redirect()->route('dashboard.admin'),
+            'doctor' => redirect()->route('dashboard.doctor'),
+            default => redirect()->route('dashboard.paciente'),
+        };
+
     })->name('dashboard');
 
     Route::get('/dashboard/admin', function () {
@@ -53,6 +57,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/paciente', function () {
         return view('dashboard.paciente');
     })->name('dashboard.paciente');
+
+    Route::get('/dashboard/doctor', function () {
+    return view('dashboard.doctor');
+    })->name('dashboard.doctor')->middleware('role:doctor');
 });
 
 Route::view('/info', 'info')->name('info');

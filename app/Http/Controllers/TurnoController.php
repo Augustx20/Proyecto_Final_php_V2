@@ -81,7 +81,7 @@ class TurnoController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        return redirect()->route('turnos.index');
+        return redirect()->route('turnos.index')->with('success', 'Turno creado correctamente.');
     }
 
     /**

@@ -15,6 +15,62 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
+
+
+        <!-- Notificaciones SweetAlert2 -->
+        @if(session('success'))
+            <script>
+                window.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: '{{ session('success') }}',
+                        timer: 3500,
+                        showConfirmButton: false
+                    });
+                });
+            </script>
+        @endif
+        @if(session('error'))
+            <script>
+                window.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: '{{ session('error') }}',
+                        timer: 3500,
+                        showConfirmButton: false
+                    });
+                });
+            </script>
+        @endif
+        @if(session('warning'))
+            <script>
+                window.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Advertencia',
+                        text: '{{ session('warning') }}',
+                        timer: 3500,
+                        showConfirmButton: false
+                    });
+                });
+            </script>
+        @endif
+        @if(session('info'))
+            <script>
+                window.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Info',
+                        text: '{{ session('info') }}',
+                        timer: 3500,
+                        showConfirmButton: false
+                    });
+                });
+            </script>
+        @endif
+
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
@@ -29,7 +85,7 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                @yield('content')
             </main>
         </div>
     </body>

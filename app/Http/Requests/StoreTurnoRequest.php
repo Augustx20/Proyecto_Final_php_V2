@@ -30,9 +30,13 @@ class StoreTurnoRequest extends FormRequest
                 'required',
                 'date_format:H:i',
 
-                Rule::unique('turnos')->where(function ($query) {
-                    return $query->where('fecha', request('fecha'));
-                })->ignore($this->turno?->id),
+                Rule::unique('turnos')
+                    ->where(function ($query) {
+                        return $query
+                            ->where('fecha', request('fecha'))
+                            ->where('medico_id', request('medico_id'));
+                    })
+                    ->ignore($this->turno?->id),
 
                 // minuto 00 o 30 solamente
                 function ($attribute, $value, $fail) {

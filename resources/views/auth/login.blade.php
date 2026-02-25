@@ -1,47 +1,54 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+@extends('layouts.guest')
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+@section('content')
+<div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500">
+    <div class="bg-white bg-opacity-90 rounded-xl shadow-lg p-10 max-w-md w-full text-center">
+        <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Swiiss Médicos Logo" class="mx-auto w-20 h-20 mb-4">
+        <h1 class="text-3xl font-bold text-blue-700 mb-2">Iniciar sesión</h1>
+        <p class="text-gray-600 mb-6">Accedé a tu cuenta de Swiiss Médicos</p>
+
+        <!-- Session Status -->
+        @if (session('status'))
+            <div class="mb-4 text-green-600 font-semibold">{{ session('status') }}</div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}" class="text-left">
+            @csrf
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-semibold mb-1">Email</label>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                @error('email')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-semibold mb-1">Contraseña</label>
+                <input id="password" type="password" name="password" required autocomplete="current-password" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                @error('password')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="flex items-center justify-between mb-6">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="remember" class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-600">Recordarme</span>
+                </label>
+                @if (Route::has('password.request'))
+                    <a class="text-sm text-blue-600 hover:underline" href="{{ route('password.request') }}">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                @endif
+            </div>
+            <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">Ingresar</button>
+        </form>
+        <div class="mt-6 text-gray-600 text-sm">
+            ¿No tenés cuenta?
+            <a href="{{ route('register') }}" class="text-blue-600 hover:underline font-semibold">Registrate</a>
         </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    </div>
+    <footer class="mt-10 text-white text-sm opacity-80">
+        &copy; {{ date('Y') }} Swiiss Médicos. Todos los derechos reservados.
+    </footer>
+</div>
+@endsection
