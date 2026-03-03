@@ -39,19 +39,35 @@
                                 <span>{{ ucfirst($turno->estado) }}</span>
                             @endif
                         </td>
-                        <td class="border px-4 py-2">
+                        <td class="border px-4 py-2 text-sm space-y-1">
                             @if(auth()->user()->role === 'admin')
-                                <a href="{{ route('turnos.edit', $turno) }}" class="text-yellow-500 font-semibold mr-2">Editar</a>
-                                <form action="{{ route('turnos.confirmar', $turno) }}" method="POST" class="inline mr-2">
+                                <div class="flex flex-wrap gap-1">
+                                    <a href="{{ route('turnos.edit', $turno) }}" class="text-yellow-500 font-semibold hover:underline">Editar</a>
+                                    <form action="{{ route('turnos.confirmar', $turno) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button class="text-green-500 font-semibold hover:underline">Confirmar</button>
+                                    </form>
+                                    <form action="{{ route('turnos.destroy', $turno) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="text-red-500 font-semibold hover:underline" onclick="return confirm('¿Seguro que desea eliminar el turno?')">Eliminar</button>
+                                    </form>
+                                </div>
+                            @elseif(auth()->user()->role === 'paciente' && $turno->estado === 'pendiente')
+                                <form action="{{ route('turnos.cancelar', $turno) }}" method="POST" class="inline">
                                     @csrf
                                     @method('PATCH')
-                                    <button class="text-green-500 font-semibold">Confirmar</button>
+                                    <button class="text-red-500 font-semibold hover:underline" onclick="return confirm('¿Seguro que desea cancelar este turno?')">Cancelar</button>
                                 </form>
-                                <form action="{{ route('turnos.destroy', $turno) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="text-red-500 font-semibold" onclick="return confirm('¿Seguro que desea eliminar el turno?')">Eliminar</button>
-                                </form>
+                            @elseif(auth()->user()->role === 'doctor')
+                                <div class="flex flex-wrap gap-1">
+                                    <form action="{{ route('turnos.finalizar', $turno) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button class="text-blue-500 font-semibold hover:underline">Finalizar</button>
+                                    </form>
+                                    <button onclick="openDerivModal({{ $turno->id }})" class="text-purple-500 font-semibold hover:underline">Derivar</button>
+                                </div>
                             @else
                                 <span class="text-gray-500">-</span>
                             @endif
@@ -66,4 +82,51 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de derivación -->
+<div id="derivModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Seleccionar Doctor</h2>
+        <form id="derivForm" method="POST" action="">
+            @csrf
+            <input type="hidden" id="turnoId" name="turno_id">
+            <div class="mb-4">
+                <label for="medico" class="block text-sm font-semibold text-gray-700 mb-2">Doctor disponible:</label>
+                <select id="medico" name="nuevo_medico_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- Seleccionar doctor --</option>
+                    @foreach(\App\Models\Medico::where('disponible', true)->get() as $medico)
+                        <option value="{{ $medico->id }}">{{ $medico->nombre }} {{ $medico->apellido }} ({{ $medico->especialidad }})</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="flex gap-4">
+                <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+                    Derivar
+                </button>
+                <button type="button" onclick="closeDerivModal()" class="flex-1 px-4 py-2 bg-gray-400 text-white rounded-lg font-semibold hover:bg-gray-500 transition">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openDerivModal(turnoId) {
+        document.getElementById('derivModal').classList.remove('hidden');
+        document.getElementById('turnoId').value = turnoId;
+        document.getElementById('derivForm').action = `/turnos/${turnoId}/derivar`;
+    }
+    
+    function closeDerivModal() {
+        document.getElementById('derivModal').classList.add('hidden');
+    }
+    
+    // Cerrar modal al hacer clic fuera de él
+    document.getElementById('derivModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDerivModal();
+        }
+    });
+</script>
 @endsection

@@ -16,6 +16,21 @@
             </div>
             <div class="hidden sm:flex items-center gap-4">
                 <span class="text-blue-900 font-semibold">{{ Auth::user()->name ?? '' }}</span>
+                @if(auth()->check() && auth()->user()->role === 'doctor')
+                    @php
+                        $medico = auth()->user()->medico;
+                        $disponible = $medico?->disponible ?? false;
+                    @endphp
+                    <form method="POST" action="{{ route('doctor.toggle') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="flex items-center gap-2 hover:opacity-70 transition cursor-pointer">
+                            <div class="w-4 h-4 rounded-full @if($disponible) bg-green-600 @else bg-red-600 @endif"></div>
+                            <span class="text-sm font-semibold @if($disponible) text-green-600 @else text-red-600 @endif">
+                                @if($disponible) Disponible @else No disponible @endif
+                            </span>
+                        </button>
+                    </form>
+                @endif
                 <a href="{{ route('profile.edit') }}" class="text-blue-600 hover:underline font-semibold">Perfil</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -38,6 +53,23 @@
             <a href="{{ route('turnos.index') }}" class="text-blue-900 font-semibold hover:text-blue-700 transition">Turnos</a>
             @if(auth()->check() && auth()->user()->role === 'admin')
                 <a href="{{ route('medicos.index') }}" class="text-blue-900 font-semibold hover:text-blue-700 transition">Gestión de Médicos</a>
+            @endif
+            @if(auth()->check() && auth()->user()->role === 'doctor')
+                <div class="border-t pt-2 mt-2">
+                    @php
+                        $medico = auth()->user()->medico;
+                        $disponible = $medico?->disponible ?? false;
+                    @endphp
+                    <form method="POST" action="{{ route('doctor.toggle') }}">
+                        @csrf
+                        <button type="submit" class="flex items-center gap-2 w-full hover:opacity-70 transition cursor-pointer">
+                            <div class="w-4 h-4 rounded-full @if($disponible) bg-green-600 @else bg-red-600 @endif"></div>
+                            <p class="text-sm font-semibold @if($disponible) text-green-600 @else text-red-600 @endif">
+                                @if($disponible) Disponible @else No disponible @endif
+                            </p>
+                        </button>
+                    </form>
+                </div>
             @endif
             <a href="{{ route('profile.edit') }}" class="text-blue-600 hover:underline font-semibold">Perfil</a>
             <form method="POST" action="{{ route('logout') }}">
