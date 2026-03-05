@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Siembra la base de datos de la aplicación.
      */
     public function run(): void
     {
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // sample doctor (in case you want to test doctor flow quickly)
+        // Médico de ejemplo (en caso de que quieras probar el flujo del médico rápidamente)
         $doc = \App\Models\Medico::firstOrCreate([
             'nombre' => 'Doctor',
             'apellido' => 'Sample',

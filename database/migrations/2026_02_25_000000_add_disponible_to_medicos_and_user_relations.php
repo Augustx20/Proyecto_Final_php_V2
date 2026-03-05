@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Ejecuta las migraciones.
      */
     public function up(): void
     {
@@ -26,14 +26,14 @@ return new class extends Migration
             }
 
             if (! Schema::hasColumn('users', 'paciente_id')) {
-                // no pacientes table exists yet; keep as unsignedBigInteger
+                // No existe tabla de pacientes aún; mantener como unsignedBigInteger
                 $table->unsignedBigInteger('paciente_id')->nullable();
             }
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Revierte las migraciones.
      */
     public function down(): void
     {

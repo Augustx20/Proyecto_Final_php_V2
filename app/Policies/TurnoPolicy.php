@@ -9,16 +9,16 @@ use Illuminate\Auth\Access\Response;
 class TurnoPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determina si el usuario puede ver cualquier modelo.
      */
     public function viewAny(User $user): bool
     {
-        // admins can see all, doctors see their own, patients see index but will be filtered in controller
+        // Los administradores pueden ver todo, los médicos ven los suyos, los pacientes ven el índice pero serán filtrados en el controlador
         return in_array($user->role, ['admin', 'doctor']);
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determina si el usuario puede ver el modelo.
      */
     public function view(User $user, Turno $turno): bool
     {
@@ -34,7 +34,7 @@ class TurnoPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determina si el usuario puede crear modelos.
      */
     public function create(User $user): bool
     {
@@ -42,7 +42,7 @@ class TurnoPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determina si el usuario puede actualizar el modelo.
      */
     public function update(User $user, Turno $turno): bool
     {
@@ -58,7 +58,7 @@ class TurnoPolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determina si el usuario puede eliminar el modelo.
      */
     public function delete(User $user, Turno $turno): bool
     {
@@ -74,7 +74,7 @@ class TurnoPolicy
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determina si el usuario puede restaurar el modelo.
      */
     public function restore(User $user, Turno $turno): bool
     {
@@ -82,7 +82,7 @@ class TurnoPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Determina si el usuario puede eliminar permanentemente el modelo.
      */
     public function forceDelete(User $user, Turno $turno): bool
     {

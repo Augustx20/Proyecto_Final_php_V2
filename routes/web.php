@@ -10,7 +10,7 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('turnos', TurnoController::class);
 
-    // admin-only confirmation action for a turno
+    // Acción de confirmación solo para administradores de un turno
     Route::patch('/turnos/{turno}/confirmar', [TurnoController::class, 'confirmar'])
         ->name('turnos.confirmar')
         ->middleware('role:admin');
@@ -34,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
             ->name('turnos.derivar');
     });
 
-    // allow owner or admin to cancel pending turnos
+    // Permitir al propietario o administrador cancelar turnos pendientes
     Route::patch('/turnos/{turno}/cancelar', [TurnoController::class, 'cancelar'])
         ->name('turnos.cancelar');
 
