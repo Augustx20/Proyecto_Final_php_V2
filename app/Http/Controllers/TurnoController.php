@@ -183,10 +183,24 @@ class TurnoController extends Controller
 
         $this->authorize('update', $turno);
 
+        // Obtener el médico actual y el nuevo médico
+        $medicoActual = $turno->medico;
+        $nuevoMedico = Medico::findOrFail($request->nuevo_medico_id);
+
+        // Validar que ambos médicos sean de la misma especialidad
+        if ($medicoActual->especialidad !== $nuevoMedico->especialidad) {
+            return back()->with('error', 'No se puede derivar a un médico de otra especialidad. El médico actual es de ' . $medicoActual->especialidad . ' y el médico seleccionado es de ' . $nuevoMedico->especialidad . '.');
+        }
+
+        // Validar que no sea el mismo médico
+        if ($request->nuevo_medico_id == $turno->medico_id) {
+            return back()->with('error', 'No puedes derivar a el mismo médico.');
+        }
+
         $turno->update([
             'medico_id' => $request->nuevo_medico_id,
         ]);
 
-        return back();
+        return back()->with('success', 'Turno derivado exitosamente a ' . $nuevoMedico->nombre . ' ' . $nuevoMedico->apellido . '.');
     }
 }

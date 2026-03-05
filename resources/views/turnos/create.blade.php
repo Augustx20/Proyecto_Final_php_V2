@@ -36,7 +36,7 @@
                 <label class="block text-gray-700 font-semibold mb-1">Médico</label>
                 <select name="medico_id" class="border rounded w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
                     @foreach($medicos as $medico)
-                        <option value="{{ $medico->id }}">{{ $medico->nombre }} {{ $medico->apellido }}</option>
+                        <option value="{{ $medico->id }}">{{ $medico->nombre }} {{ $medico->apellido }} ({{ $medico->especialidad }})</option>
                     @endforeach
                 </select>
             </div>

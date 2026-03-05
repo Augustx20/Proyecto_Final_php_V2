@@ -86,17 +86,16 @@
 <!-- Modal de derivación -->
 <div id="derivModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Seleccionar Doctor</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Derivar a otro Doctor</h2>
+        <p id="especialidadInfo" class="text-sm text-gray-600 mb-4"></p>
         <form id="derivForm" method="POST" action="">
             @csrf
             <input type="hidden" id="turnoId" name="turno_id">
+            <input type="hidden" id="especialidadActual" name="especialidad_actual">
             <div class="mb-4">
-                <label for="medico" class="block text-sm font-semibold text-gray-700 mb-2">Doctor disponible:</label>
+                <label for="medico" class="block text-sm font-semibold text-gray-700 mb-2">Doctor de la misma especialidad:</label>
                 <select id="medico" name="nuevo_medico_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">-- Seleccionar doctor --</option>
-                    @foreach(\App\Models\Medico::where('disponible', true)->get() as $medico)
-                        <option value="{{ $medico->id }}">{{ $medico->nombre }} {{ $medico->apellido }} ({{ $medico->especialidad }})</option>
-                    @endforeach
+                    <option value="">-- Cargando médicos --</option>
                 </select>
             </div>
             <div class="flex gap-4">
@@ -112,10 +111,64 @@
 </div>
 
 <script>
+    // Datos de los turnos con información de médicos (para poder filtrar por especialidad)
+    const turnosData = {
+        @foreach($turnos as $turno)
+            '{{ $turno->id }}': {
+                medico_id: '{{ $turno->medico_id }}',
+                medico_nombre: '{{ $turno->medico->nombre }}',
+                medico_apellido: '{{ $turno->medico->apellido }}',
+                especialidad: '{{ $turno->medico->especialidad }}'
+            },
+        @endforeach
+    };
+
+    // Objeto con todos los médicos disponibles
+    const medicosDisponibles = {
+        @php
+            $medicosArray = [];
+            foreach(\App\Models\Medico::where('disponible', true)->get() as $medico) {
+                echo "'" . $medico->id . "': {";
+                echo "nombre: '" . $medico->nombre . "',";
+                echo "apellido: '" . $medico->apellido . "',";
+                echo "especialidad: '" . $medico->especialidad . "',";
+                echo "id: " . $medico->id;
+                echo "},";
+            }
+        @endphp
+    };
+
     function openDerivModal(turnoId) {
+        const turno = turnosData[turnoId];
+        const especialidad = turno.especialidad;
+        
         document.getElementById('derivModal').classList.remove('hidden');
         document.getElementById('turnoId').value = turnoId;
+        document.getElementById('especialidadActual').value = especialidad;
+        document.getElementById('especialidadInfo').textContent = `Derivar a un doctor con especialidad: ${especialidad}`;
         document.getElementById('derivForm').action = `/turnos/${turnoId}/derivar`;
+        
+        // Cargar solo médicos de la misma especialidad
+        const medicoSelect = document.getElementById('medico');
+        medicoSelect.innerHTML = '<option value="">-- Seleccionar doctor --</option>';
+        
+        for (const [medicoId, medico] of Object.entries(medicosDisponibles)) {
+            // Solo agregar si tiene la misma especialidad y no es el médico actual
+            if (medico.especialidad === especialidad && medico.id != turno.medico_id) {
+                const option = document.createElement('option');
+                option.value = medico.id;
+                option.textContent = `${medico.nombre} ${medico.apellido}`;
+                medicoSelect.appendChild(option);
+            }
+        }
+        
+        // Mostrar mensaje si no hay médicos disponibles
+        if (medicoSelect.children.length === 1) {
+            const option = document.createElement('option');
+            option.disabled = true;
+            option.textContent = 'No hay otros médicos disponibles';
+            medicoSelect.appendChild(option);
+        }
     }
     
     function closeDerivModal() {
