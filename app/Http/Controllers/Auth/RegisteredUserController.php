@@ -15,7 +15,7 @@ use Illuminate\View\View;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Muestra la vista de registro.
      */
     public function create(): View
     {
@@ -23,7 +23,7 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
+     * Maneja una solicitud de registro entrante.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        // log in the new user so we can redirect based on role
+        // Inicia sesión al nuevo usuario para que podamos redirigir según el rol
         auth()->login($user);
 
         if ($user->role === 'admin') {

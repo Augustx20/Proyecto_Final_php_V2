@@ -13,7 +13,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Los atributos que se pueden asignar en masa.
      *
      * @var list<string>
      */
@@ -27,7 +27,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Los atributos que deben ocultarse para la serialización.
      *
      * @var list<string>
      */
@@ -37,7 +37,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Obtener los atributos que deben convertirse.
      *
      * @return array<string, string>
      */
@@ -50,7 +50,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Doctor account (points back to medico record).
+     * Cuenta de doctor (apunta al registro de médico).
      */
     public function medico()
     {
@@ -58,7 +58,7 @@ class User extends Authenticatable
     }
 
     /**
-     * In the future this could reference a patient profile.
+     * En el futuro esto podría hacer referencia a un perfil de paciente.
      */
     public function paciente()
     {

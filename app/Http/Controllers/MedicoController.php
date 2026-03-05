@@ -12,7 +12,7 @@ use App\Http\Requests\StoreMedicoRequest;
 class MedicoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra un listado del recurso.
      */
     public function index()
     {
@@ -21,7 +21,7 @@ class MedicoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear un nuevo recurso.
      */
     public function create()
     {
@@ -29,7 +29,7 @@ class MedicoController extends Controller
     }
 
     /**
-     * Toggle availability for the authenticated doctor (from navbar form).
+     * Cambia la disponibilidad del doctor autenticado (desde el formulario de la barra de navegación).
      */
     public function toggle()
     {
@@ -40,7 +40,7 @@ class MedicoController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacena un recurso recién creado en el almacenamiento.
      */
     public function store(StoreMedicoRequest $request)
     {

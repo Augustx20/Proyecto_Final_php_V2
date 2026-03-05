@@ -58,7 +58,7 @@ class MedicoManagementTest extends TestCase
             'role' => 'doctor',
         ]);
 
-        // password should be hashed, not stored in plain text
+        // La contraseña debe estar cifrada, no almacenada en texto plano
         $user = User::where('email', 'juan.perez@example.com')->first();
         $this->assertTrue(
             Hash::check('secret123', $user->password),

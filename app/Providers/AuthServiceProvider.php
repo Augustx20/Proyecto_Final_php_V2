@@ -9,7 +9,7 @@ use App\Policies\TurnoPolicy;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * The policy mappings for the application.
+     * Los mapeos de políticas para la aplicación.
      *
      * @var array<class-string, class-string>
      */
@@ -18,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Register any authentication / authorization services.
+     * Registra cualquier servicio de autenticación / autorización.
      */
     public function boot(): void
     {

@@ -8,7 +8,7 @@ class StoreMedicoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // we assume middleware already ensures only admins access this route
+        // Asumimos que el middleware ya asegura que solo los administradores accedan a esta ruta
         return auth()->check() && auth()->user()->role === 'admin';
     }
 

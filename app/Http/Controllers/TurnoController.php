@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class TurnoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra un listado del recurso.
      */
     public function index()
     {
@@ -50,7 +50,7 @@ class TurnoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear un nuevo recurso.
      */
     public function create()
     {
@@ -60,11 +60,11 @@ class TurnoController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacena un recurso recién creado en el almacenamiento.
      */
     public function store(StoreTurnoRequest $request)
     {
-        // adicional: volver a comprobar solapamiento en el controlador para
+        // Adición: volver a comprobar solapamiento en el controlador para
         // dar un mensaje personalizado (el Request ya tiene la regla unique).
         $existeTurno = Turno::where('fecha', $request->fecha)
             ->where('hora', $request->hora)
@@ -85,7 +85,7 @@ class TurnoController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Muestra el recurso especificado.
      */
     public function show(Turno $turno)
     {
@@ -95,7 +95,7 @@ class TurnoController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar el recurso especificado.
      */
     public function edit(Turno $turno)
     {
@@ -106,7 +106,7 @@ class TurnoController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza el recurso especificado en el almacenamiento.
      */
     public function update(StoreTurnoRequest $request, Turno $turno)
     {
@@ -119,7 +119,7 @@ class TurnoController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina el recurso especificado del almacenamiento.
      */
     public function destroy(Turno $turno)
     {
@@ -132,25 +132,25 @@ class TurnoController extends Controller
     }
 
     /**
-     * Confirm the turno (admin only).
+     * Confirma el turno (solo administrador).
      */
     public function confirmar(Turno $turno)
     {
-        // only admins should hit this route; middleware handles it
+        // Solo los administradores deben acceder a esta ruta; el middleware lo maneja
         $turno->update(['estado' => 'confirmado']);
 
         return back()->with('success', 'Turno confirmado');
     }
 
     /**
-     * Cancel the turno (user or admin when pending).
+     * Cancela el turno (usuario o administrador cuando está pendiente).
      */
     public function cancelar(Turno $turno)
     {
-        // reuse update policy so owners/admins or doctors can act
+        // Reutilizar política de actualización para que propietarios/administradores o médicos puedan actuar
         $this->authorize('update', $turno);
 
-        // Only cancel if still pending
+        // Solo cancelar si aún está pendiente
         if ($turno->estado !== 'pendiente') {
             return back()->with('error', 'Solo se pueden cancelar turnos pendientes.');
         }
@@ -161,7 +161,7 @@ class TurnoController extends Controller
     }
 
     /**
-     * Mark the turno as finalizado (doctor or admin).
+     * Marca el turno como finalizado (doctor o administrador).
      */
     public function finalizar(Turno $turno)
     {
@@ -173,7 +173,7 @@ class TurnoController extends Controller
     }
 
     /**
-     * Doctor can reassign the turno to another medico.
+     * El doctor puede reasignar el turno a otro médico.
      */
     public function derivar(Request $request, Turno $turno)
     {

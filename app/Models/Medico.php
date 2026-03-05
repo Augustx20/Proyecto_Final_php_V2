@@ -11,7 +11,7 @@ class Medico extends Model
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
+     * Los atributos que se pueden asignar en masa.
      *
      * @var array<int, string>
      */
@@ -31,7 +31,7 @@ class Medico extends Model
     }
 
     /**
-     * Relation with user account when the médico has a user.
+     * Relación con cuenta de usuario cuando el médico tiene un usuario.
      */
     public function user()
     {
